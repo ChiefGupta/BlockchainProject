@@ -73,8 +73,8 @@ A decentralized application for securely uploading and storing files using IPFS 
 6. **Configure Environment Variables**
    - Add contract details in `UploadFile.js`:
      ```javascript
-     const contractAddress = "YOUR_CONTRACT_ADDRESS";
-     const contractABI = [...]  // Contract ABI from Remix or Truffle
+     const contractAddress = "0xD8b25a95f41E3531080641aF40A97aA03cE5aD70";
+     const contractABI = <contractABI here>;  // Replace with the actual ABI
      ```
 
 ---
@@ -104,14 +104,20 @@ A decentralized application for securely uploading and storing files using IPFS 
 
 This smart contract allows users to upload files to IPFS and stores file metadata on the blockchain.
 
-#### Key Functions
-- `uploadFile`: Uploads file metadata to the blockchain.
-- `getAllFileIds`: Returns a list of all uploaded file IDs.
-- `getFile`: Retrieves file details for a given ID.
+#### Contract Address
+- **Polygon Amoy Testnet Contract Address**: `0xD8b25a95f41E3531080641aF40A97aA03cE5aD70`
 
-#### Smart Contract Deployment
-1. Compile and deploy the smart contract on the Polygon Amoy Testnet.
-2. Copy the contract address and ABI for frontend integration.
+#### Contract ABI
+The ABI is provided below for integration:
+```json
+[
+    { "anonymous": false, "inputs": [...], "name": "FileUploaded", "type": "event" },
+    { "inputs": [...], "name": "fileCount", "outputs": [...], "stateMutability": "view", "type": "function" },
+    { "inputs": [...], "name": "getAllFileIds", "outputs": [...], "stateMutability": "view", "type": "function" },
+    { "inputs": [...], "name": "getFile", "outputs": [...], "stateMutability": "view", "type": "function" },
+    { "inputs": [...], "name": "uploadFile", "outputs": [], "stateMutability": "nonpayable", "type": "function" }
+]
+```
 
 ---
 
