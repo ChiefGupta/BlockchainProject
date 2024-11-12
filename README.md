@@ -1,70 +1,153 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Decentralized File Storage App
 
-## Available Scripts
+A decentralized application for securely uploading and storing files using IPFS (InterPlanetary File System) and Ethereum blockchain. This project provides a user-friendly interface to upload files to IPFS, with metadata stored on the blockchain via a smart contract on the Polygon Amoy Testnet. The application is built using React and Tailwind CSS for the frontend.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Table of Contents
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Setup and Installation](#setup-and-installation)
+- [Usage](#usage)
+- [Smart Contract Details](#smart-contract-details)
+- [File List Retrieval and Download](#file-list-retrieval-and-download)
+- [Troubleshooting](#troubleshooting)
+- [Future Enhancements](#future-enhancements)
+- [License](#license)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Features
 
-### `npm test`
+- **File Upload**: Users can upload files directly to IPFS.
+- **Blockchain Integration**: File metadata is stored on the Polygon Amoy Testnet, ensuring data immutability.
+- **File List Retrieval**: View the list of all files uploaded, with IPFS links for download.
+- **Responsive Design**: Styled with Tailwind CSS for a responsive and accessible interface.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## Tech Stack
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Frontend**: React, Tailwind CSS
+- **Blockchain**: Solidity smart contract on Polygon Amoy Testnet
+- **Storage**: IPFS for decentralized file storage
+- **Web3**: Ethers.js, MetaMask for wallet integration
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Setup and Installation
 
-### `npm run eject`
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v14 or higher)
+- [MetaMask](https://metamask.io/) extension
+- IPFS node running locally or accessible remotely
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Installation Steps
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/yourusername/decentralized-file-storage.git
+   cd decentralized-file-storage
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+3. **Set up IPFS**
+   - Install and initialize IPFS if not already done:
+     ```bash
+     npm install -g ipfs
+     ipfs init
+     ipfs daemon
+     ```
 
-## Learn More
+4. **Configure Tailwind CSS**
+   - If not already configured, initialize Tailwind CSS by following the [Tailwind CSS documentation](https://tailwindcss.com/docs/installation).
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+5. **Compile and Deploy Smart Contract**
+   - Use [Remix](https://remix.ethereum.org/) or Truffle/Hardhat for deployment. Save the contract address and ABI after deployment.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+6. **Configure Environment Variables**
+   - Add contract details in `UploadFile.js`:
+     ```javascript
+     const contractAddress = "YOUR_CONTRACT_ADDRESS";
+     const contractABI = [...]  // Contract ABI from Remix or Truffle
+     ```
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Usage
 
-### Analyzing the Bundle Size
+### Running the Application
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1. **Start the Development Server**
+   ```bash
+   npm start
+   ```
+2. **Access the App**
+   - Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Making a Progressive Web App
+3. **Upload a File**
+   - Select a file and click `Upload File`. The file is stored on IPFS, with metadata recorded on the blockchain.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+4. **Retrieve Uploaded Files**
+   - Click `Refresh File List` to see all previously uploaded files. Each file entry includes a link for downloading the file directly from IPFS.
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Smart Contract Details
 
-### Deployment
+### FileStorage.sol
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+This smart contract allows users to upload files to IPFS and stores file metadata on the blockchain.
 
-### `npm run build` fails to minify
+#### Key Functions
+- `uploadFile`: Uploads file metadata to the blockchain.
+- `getAllFileIds`: Returns a list of all uploaded file IDs.
+- `getFile`: Retrieves file details for a given ID.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+#### Smart Contract Deployment
+1. Compile and deploy the smart contract on the Polygon Amoy Testnet.
+2. Copy the contract address and ABI for frontend integration.
+
+---
+
+## File List Retrieval and Download
+
+Once files are uploaded, users can retrieve and view the list of files on the platform:
+- **View File List**: Each file includes metadata such as the file name, type, and IPFS hash.
+- **Download Link**: Click on the "View/Download" link to access the file from IPFS.
+
+---
+
+## Troubleshooting
+
+- **MetaMask Errors**: Ensure MetaMask is connected to the correct network (Polygon Amoy Testnet).
+- **IPFS Errors**: Check that your IPFS daemon is running on `localhost:5001`. Update configuration if using a remote node.
+- **CORS Issues**: If you encounter CORS issues, configure IPFS to allow access from `localhost:3000`:
+  ```bash
+  ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["http://localhost:3000"]'
+  ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "POST", "GET"]'
+  ipfs daemon
+  ```
+
+---
+
+## Future Enhancements
+
+- **Encryption**: Add file encryption for added security before uploading to IPFS.
+- **Notifications**: Notify users when a file is successfully uploaded.
+- **Gas Fee Optimization**: Implement batching or other strategies to reduce transaction costs.
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+Feel free to reach out with issues, contributions, or suggestions. Happy coding! 🚀
