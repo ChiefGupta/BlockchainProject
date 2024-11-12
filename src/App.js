@@ -7,7 +7,6 @@ function App() {
 
     return (
         <div className="App">
-            <h1>Decentralized File Storage</h1>
             <UploadFile contractAddress={contractAddress} contractABI={contractABI} />
         </div>
     );
