@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { create } from 'ipfs-http-client';
 
@@ -12,6 +12,7 @@ const ipfs = create({
 function UploadFile({ contractAddress, contractABI }) {
     const [file, setFile] = useState(null);
     const [status, setStatus] = useState("");
+    const [fileList, setFileList] = useState([]);
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
@@ -26,37 +27,23 @@ function UploadFile({ contractAddress, contractABI }) {
         try {
             setStatus("Uploading to IPFS...");
             
-            // Upload file to IPFS
             const added = await ipfs.add(file);
             const ipfsHash = added.path;
-            console.log("IPFS Hash:", ipfsHash); // Debugging output
-
-            // File details for debugging
-            console.log("IPFS Hash:", ipfsHash);
-            console.log("File Size:", file.size);
-            console.log("File Type:", file.type);
-            console.log("File Name:", file.name);
-
 
             setStatus("Storing metadata on blockchain...");
 
-            // Initialize ethers provider and signer for MetaMask
             const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-            await provider.send("eth_requestAccounts", []); // Request wallet connection
+            await provider.send("eth_requestAccounts", []);
             const signer = provider.getSigner();
 
-            // Initialize the contract with signer
             const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-            // Interact with the smart contract, setting a manual gas limit
             const tx = await contract.uploadFile(
                 ipfsHash,
                 file.size,
                 file.type,
                 file.name,
-                {
-                    gasLimit: 3000000 // Set an appropriate gas limit
-                }
+                { gasLimit: 3000000 }
             );
             await tx.wait();
 
@@ -67,11 +54,64 @@ function UploadFile({ contractAddress, contractABI }) {
         }
     };
 
+    const fetchFileList = async () => {
+        try {
+            setStatus("Fetching all uploaded files...");
+
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const contract = new ethers.Contract(contractAddress, contractABI, provider);
+
+            const fileIds = await contract.getAllFileIds();
+
+            const files = await Promise.all(fileIds.map(async (id) => {
+                const fileData = await contract.getFile(id);
+                const [fileId, ipfsHash, fileSize, fileType, fileName, uploadTime, uploader] = fileData;
+                return {
+                    fileId,
+                    ipfsHash,
+                    fileSize,
+                    fileType,
+                    fileName,
+                    uploadTime: new Date(uploadTime * 1000).toLocaleString(),
+                    uploader
+                };
+            }));
+
+            setFileList(files);
+            setStatus("File list retrieved successfully.");
+        } catch (error) {
+            console.error("Error fetching file list:", error);
+            setStatus("Error fetching file list.");
+        }
+    };
+
+    useEffect(() => {
+        fetchFileList();
+    }, []);
+
     return (
         <div>
+            <h2>Upload a New File</h2>
             <input type="file" onChange={handleFileChange} />
             <button onClick={handleUpload}>Upload File</button>
             <p>{status}</p>
+
+            <h2>List of Uploaded Files</h2>
+            <button onClick={fetchFileList}>Refresh File List</button>
+            <ul>
+                {fileList.map((file) => (
+                    <li key={file.fileId}>
+                        <strong>File Name:</strong> {file.fileName}<br />
+                        <strong>File Type:</strong> {file.fileType}<br />
+                        <strong>Uploaded By:</strong> {file.uploader}<br />
+                        <strong>Upload Time:</strong> {file.uploadTime}<br />
+                        <strong>IPFS Hash:</strong> {file.ipfsHash}<br />
+                        <a href={`http://localhost:8080/ipfs/${file.ipfsHash}`} target="_blank" rel="noopener noreferrer">
+                            View/Download
+                        </a>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }

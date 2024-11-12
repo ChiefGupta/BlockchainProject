@@ -3,7 +3,7 @@ import UploadFile from './UploadFile';
 import contractABI from './contractABI.json';
 
 function App() {
-    const contractAddress = "0xf8e81D47203A594245E36C48e151709F0C19fBe8"; // Replace with actual address
+    const contractAddress = "0xD8b25a95f41E3531080641aF40A97aA03cE5aD70"; // Replace with actual address
 
     return (
         <div className="App">
