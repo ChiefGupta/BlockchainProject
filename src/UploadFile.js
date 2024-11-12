@@ -1,7 +1,10 @@
+// App.css
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { create } from 'ipfs-http-client';
+import './App.css'; // Import the CSS file
 
+// Connect to your local IPFS node
 const ipfs = create({
     host: 'localhost',
     port: 5001,
@@ -25,6 +28,7 @@ function UploadFile({ contractAddress, contractABI }) {
 
         try {
             setStatus("Uploading to IPFS...");
+            
             const added = await ipfs.add(file);
             const ipfsHash = added.path;
 
@@ -88,55 +92,30 @@ function UploadFile({ contractAddress, contractABI }) {
     }, []);
 
     return (
-        <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
-            <h1 className="text-4xl font-bold text-center text-blue-600 mb-8">Decentralized File Storage</h1>
-
-            {/* Upload Section */}
-            <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl mx-auto mb-8">
-                <h2 className="text-2xl font-semibold text-gray-700 mb-4">Upload a New File</h2>
-                <input
-                    type="file"
-                    onChange={handleFileChange}
-                    className="block w-full text-gray-700 border border-gray-300 rounded-md p-2 mb-4"
-                />
-                <button
-                    onClick={handleUpload}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md w-full hover:bg-blue-700 transition"
-                >
-                    Upload File
-                </button>
+        <div className="upload-container">
+            <h2>Upload a New File</h2>
+            <div className="file-upload">
+                <input type="file" onChange={handleFileChange} className="file-input" />
+                <button onClick={handleUpload} className="upload-button">Upload File</button>
             </div>
+            <p className="status-message">{status}</p>
 
-            {/* File List Section */}
-            <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl mx-auto">
-                <h2 className="text-2xl font-semibold text-gray-700 mb-4">List of Uploaded Files</h2>
-                <button
-                    onClick={fetchFileList}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md w-full mb-4 hover:bg-blue-700 transition"
-                >
-                    Refresh File List
-                </button>
-                <p className="text-gray-600 text-center mb-4">{status}</p>
-                <ul className="space-y-4">
-                    {fileList.map((file) => (
-                        <li key={file.fileId} className="bg-gray-50 p-4 rounded-lg shadow break-words">
-                            <p><strong>File Name:</strong> {file.fileName}</p>
-                            <p><strong>File Type:</strong> {file.fileType}</p>
-                            <p><strong>Uploaded By:</strong> {file.uploader}</p>
-                            <p><strong>Upload Time:</strong> {file.uploadTime}</p>
-                            <p><strong>IPFS Hash:</strong> <span className="break-words">{file.ipfsHash}</span></p>
-                            <a
-                                href={`http://localhost:8080/ipfs/${file.ipfsHash}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-500 underline mt-2 block"
-                            >
-                                View/Download
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+            <h2>List of Uploaded Files</h2>
+            <button onClick={fetchFileList} className="refresh-button">Refresh File List</button>
+            <ul className="file-list">
+                {fileList.map((file) => (
+                    <li key={file.fileId} className="file-item">
+                        <strong>File Name:</strong> {file.fileName}<br />
+                        <strong>File Type:</strong> {file.fileType}<br />
+                        <strong>Uploaded By:</strong> {file.uploader}<br />
+                        <strong>Upload Time:</strong> {file.uploadTime}<br />
+                        <strong>IPFS Hash:</strong> {file.ipfsHash}<br />
+                        <a href={`http://localhost:8080/ipfs/${file.ipfsHash}`} target="_blank" rel="noopener noreferrer">
+                            View/Download
+                        </a>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }
